@@ -1,0 +1,17 @@
+? simplenews-6.x-1.x.patch
+Index: simplenews.module
+===================================================================
+RCS file: /cvs/drupal-contrib/contributions/modules/simplenews/simplenews.module,v
+retrieving revision 1.76.2.157
+diff -u -p -r1.76.2.157 simplenews.module
+--- simplenews.module	7 Sep 2010 02:10:14 -0000	1.76.2.157
++++ simplenews.module	24 Sep 2010 15:20:31 -0000
+@@ -734,7 +734,7 @@ function simplenews_user($op, &$edit, &$
+       }
+ 
+       // Activate/deactivate subscription when account is blocked/unblocked
+-      if ($category == 'account' && isset($edit['status'])) {
++      if ($category == 'account' && isset($edit['status']) && !module_exists('simplenews_global_unsubscribe')) {
+         if (variable_get('simplenews_sync_account', TRUE)) {
+           db_query("UPDATE {simplenews_subscriptions} SET activated = %d WHERE uid = %d", $edit['status'], $account->uid);
+         }
