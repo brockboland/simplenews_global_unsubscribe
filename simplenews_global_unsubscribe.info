@@ -1,0 +1,12 @@
+; $Id: simplenews_global_unsubscribe.info 233 2010-09-24 15:15:27Z brockboland $
+name = Simplenews Global Unsubscribe
+description = "Adds a global unsubscribe checkbox to the profile newsletter subscription form."
+
+; Core version (required)
+core = 6.x
+
+; Package name (see http://drupal.org/node/101009 for a list of names)
+package = Mail
+
+; Module dependencies
+dependencies[] = simplenews

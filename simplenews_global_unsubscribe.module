@@ -1,0 +1,48 @@
+<?php
+// $Id: simplenews_global_unsubscribe.module 233 2010-09-24 15:15:27Z brockboland $
+
+/**
+ * @file
+ * Simplenews Global Unsubscribe
+ *
+ * Adds a global unsubscribe checkbox to the profile newsletter subscription form.
+ */
+
+
+/**
+ * Implementation of hook_user().
+ */
+function simplenews_global_unsubscribe_user($op, &$edit, &$account, $category = NULL) {
+  switch ($op) {
+    case 'form':
+      if ($category == 'newsletter' || module_exists('onepageprofile')) {
+        $subscription = simplenews_get_subscription($account);
+        $form = array();
+        $form['no_newsletters_fieldset'] = array(
+          '#type' => 'fieldset',
+          '#title' => t('No Newsletters'),
+          '#description' => t('This option will prevent you from receiving any newsletter e-mails, even ones to which you are subscribed. If you wish to start receiving newsletters again in the future, you must turn off this option.'),
+          '#collapsible' => FALSE,
+          '#collapsed' => FALSE
+        );
+        $form['no_newsletters_fieldset']['no_newsletters'] = array(
+          '#type' => 'checkbox',
+          '#title' => t('Receive No Newsletters'),
+          '#default_value' => (1 - $subscription->activated),
+        );
+        return $form;
+      }
+      break;
+    
+    case 'update':
+      if (array_key_exists('no_newsletters', $edit)
+       && (user_access('subscribe to newsletters', $account) || user_access('administer users'))) {
+        // If no_newsletters is 1, activated should be 0
+        // If no_newsletters is 0, activated should be 1
+        $activated = 1 - $edit['no_newsletters'];
+        
+        db_query("UPDATE {simplenews_subscriptions} SET activated = %d WHERE uid = %d", $activated, $account->uid);
+      }
+      break;
+  }
+}
